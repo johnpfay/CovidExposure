@@ -185,4 +185,4 @@ def update_page(input_value,sa,ht,nstudents,cduration,cperiods,ctaken):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
