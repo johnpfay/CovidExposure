@@ -81,8 +81,6 @@ def update_df(surface_area = 900,
 
 def update_figure(df):
     #Update the dataframe
-    surface_area = Input('suface','value')
-    print(surface_area)
     fig = px.histogram(df,x='PS_Fsemester',nbins=40,
                        title='Distribution of Faculty Probabilities')
 
