@@ -79,39 +79,38 @@ def update_df(surface_area = 900,
     df['PS_Ssemester'] = 1 - df['nPS']
     return(df)
 
-def update_figure(df):
-    #Update the dataframe
-    fig = px.histogram(df,x='PS_Fsemester',nbins=40,
-                       title='Distribution of Faculty Infection Probabilities over the course of the Semester for 10,000 Monte Carlo Simulations')
-    fig.update_xaxes(title_text = 'Probability of infection (%)')
-    fig.update_layout(xaxis_tickformat = ".2%")
-    #fig = px.scatter(df,x='L',y='L*DUR')
-    fig.update_layout(transition_duration=500)
+def update_figure(df,faculty=True):
+    if faculty: fld = 'PS_Fsemester'; txt = 'Faculty'
+    else: fld = 'PS_Ssemester'; txt = 'Student'
+    #Get the max x value
+    x_max = df['PS_Ssemester'].max()
+    #Update the figure
+    fig = px.histogram(df,x=fld,nbins=40,
+                       title=f'Distribution of {txt} Infection Probabilities over<br>the course of the Semester for 10,000 Monte Carlo Simulations')
+    fig.update_xaxes(title_text = 'Probability of infection (%)',
+                     range=[0,x_max])
+    fig.update_layout(xaxis_tickformat = "%",
+                      font_size=10)
+    #fig.update_layout(transition_duration=500)
     return(fig)
 
-def summarize_output(df):
+def summarize_output(df,faculty=True):
+    if faculty: fld = 'PS_Fsemester'; txt = 'Faculty Member'
+    else: fld = 'PS_Ssemester'; txt = 'Student'
     #Create markdown from values
-    fac_mean = df['PS_Fsemester'].mean()
-    fac_quants = [df['PS_Fsemester'].quantile(x) for x in (0.05,0.25,0.5,0.75,0.9)]
-    stu_mean = df['PS_Ssemester'].mean()
-    stu_quants = [df['PS_Ssemester'].quantile(x) for x in (0.05,0.25,0.5,0.75,0.9)]
+    the_mean = df[fld].mean()
+    the_quants = [df[fld].quantile(x) for x in (0.05,0.25,0.5,0.75,0.9)]
     #Create Markdown
-    md_text=f'''
-### Output: Probabilies for semester accounting for community infection rates   
-| Average Infection Probability for Faculty Member for semester | {fac_mean:0.2%} |
-| --- | --- |
-| 5th percentile: | {fac_quants[0]:0.2%} |
-| 25th percentile: | {fac_quants[1]:0.2%} |
-| 50th percentile: | {fac_quants[2]:0.2%} |
-| 75th percentile: | {fac_quants[3]:0.2%} |
-| 95th percentile: | {fac_quants[4]:0.2%} |
-| --- | --- |
-| **Average Infection Probability for Student for semester**       | **{stu_mean:0.2%}** |
-| 5th percentile: | {stu_quants[0]:0.2%} |
-| 25th percentile: | {stu_quants[1]:0.2%} |
-| 50th percentile: | {stu_quants[2]:0.2%} |
-| 75th percentile: | {stu_quants[3]:0.2%} |
-| 95th percentile: | {stu_quants[4]:0.2%} |
+    md_text=f'''  
+**Average Infection Probability for {txt} for semester**
+
+| Average (10k runs) | {the_mean:0.2%} |
+| --: | --- |
+| 5th percentile: | {the_quants[0]:0.2%} |
+| 25th percentile: | {the_quants[1]:0.2%} |
+| 50th percentile: | {the_quants[2]:0.2%} |
+| 75th percentile: | {the_quants[3]:0.2%} |
+| 95th percentile: | {the_quants[4]:0.2%} |
 '''
     return md_text
 
@@ -228,13 +227,23 @@ Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) if you have questions, 
                 style={'font-size':24,'background-color': '#4CAF50',
                        'color':'white',
                        'padding':'15px 32px'}),
-    html.Div([
-        dcc.Markdown(id='faculty_results'),
-    dcc.Graph(id='faculty_histogram')])
-])
+    html.Table([
+        html.Tr([
+            html.Td(dcc.Markdown(id='faculty_results')),
+            html.Td(dcc.Graph(id='faculty_histogram'))
+            ]),
+        html.Tr([
+            html.Td(dcc.Markdown(id='student_results')),
+            html.Td(dcc.Graph(id='student_histogram'))
+            ])
+        ])
+    ])
+ 
 
 @app.callback([Output('faculty_results','children'),
-               Output('faculty_histogram','figure')],
+               Output('student_results','children'),
+               Output('faculty_histogram','figure'),
+               Output('student_histogram','figure')],
               [Input('submit-button-state','n_clicks')],
               [State('surface','value'),
                State('height','value'),
@@ -285,12 +294,14 @@ def update_page(input_value,sa,ht,nstudents,cduration,cperiods,ctaken,
                    inhalation_mask_efficiency = [inmask_min/100,inmask_max/100],
                    background_infection_rate = [infect_min/100,infect_max/100])
                    
-    #Get Values
-    md_results = summarize_output(df)
+    #Get summaries
+    fac_results = summarize_output(df,True)
+    stu_results = summarize_output(df,False)
     #Create histogram
-    fig = update_figure(df)
+    fac_fig = update_figure(df,True)
+    stu_fig = update_figure(df,False)
     #return f'Pexp Faculty (Semester): {mean_val:0.2%}',fig
-    return md_results,fig
+    return fac_results,stu_results,fac_fig,stu_fig
     
 
 
