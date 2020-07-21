@@ -134,7 +134,7 @@ app.layout = html.Div([
 [Link to spreadsheet version]([https://tinyurl.com/yxfd23kr')
         
 Developed by **Prasad Kasibhatla** (Duke), with help from Prof. Jose Jimenez (U. Colorado) and Prof. Elizabeth Albright (Duke)  
-Dashboard created by **John Fay** (Duke)  
+Dashboard created by [**John Fay**](mailto:john.fay@duke.edu) (Duke) -- Code available at: [https://github.com/johnpfay/CovidExposure](https://github.com/johnpfay/CovidExposure)  
 Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) if you have questions, comments, and suggestions. 
 ''',style={'border-style':'ridge',
            'padding':'0.5em',
