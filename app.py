@@ -128,6 +128,16 @@ server = app.server
 
 #Construct the web site
 app.layout = html.Div([
+    dcc.Markdown('''
+**Monte Carlo Estimation of COVID-19 airborne transmission during classroom teaching**: 
+[Link to spreadsheet version]([https://tinyurl.com/yxfd23kr')
+        
+Developed by **Prasad Kasibhatla** (Duke), with help from Prof. Jose Jimenez (U. Colorado) and Prof. Elizabeth Albright (Duke)  
+Dashboard created by **John Fay** (Duke)  
+Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) if you have questions, comments, and suggestions. 
+''',style={'border-style':'ridge',
+           'padding':'0.5em',
+           'background-color': 'lightblue'}),
     html.Table([
         html.Tr([
             html.Th("Variable"), 
@@ -137,14 +147,14 @@ app.layout = html.Div([
             html.Th("Min"), 
             html.Th("Max")]),
         html.Tr([
-            html.Td("Surface area"), 
+            html.Td("Surface area (cu.ft.)"), 
             html.Td(dcc.Input(id='surface',value=900,type='number')),
             html.Td(""),
             html.Td("Breathing rate - Faculty (m3/hour)"),
             html.Td(dcc.Input(id='breath_fmin',value=1.0,type='number')),
             html.Td(dcc.Input(id='breath_fmax',value=1.2,type='number'))]),
         html.Tr([
-            html.Td("Height"), 
+            html.Td("Height (ft.)"), 
             html.Td(dcc.Input(id='height',value=10,type='number')),
             html.Td(""),
             html.Td("Breathing rate - Student (m3/hour)"),
@@ -158,7 +168,7 @@ app.layout = html.Div([
             html.Td(dcc.Input(id='vent_min',value=2,type='number')),
             html.Td(dcc.Input(id='vent_max',value=4,type='number'))]),
         html.Tr([
-            html.Td("Class duration"), 
+            html.Td("Class duration (min.)"), 
             html.Td(dcc.Input(id='class_duration',value=75,type='number')),
             html.Td(""),
             html.Td("Decay rate of the virus (1/hour)"),
@@ -172,7 +182,7 @@ app.layout = html.Div([
             html.Td(dcc.Input(id='depos_min',value=0.3,type='number')),
             html.Td(dcc.Input(id='depos_max',value=1.5,type='number')),]),
         html.Tr([
-            html.Td("# of classes taken/student"), 
+            html.Td("# of classes taken per student"), 
             html.Td(dcc.Input(id='classes_taken',value=4,type='number')),
             html.Td(""),
             html.Td("Additional control measures (1/hour)"),
