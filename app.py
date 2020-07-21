@@ -119,7 +119,6 @@ def summarize_output(df):
 df = update_df()
 fig = update_figure(df)
 md_results = summarize_output(df)
-#df = pd.read_csv('static.csv')
 
 #%% Page construction
 #external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -131,28 +130,90 @@ server = app.server
 app.layout = html.Div([
     html.Table([
         html.Tr([
-            html.Th("Variable"), html.Th("Value")]),
+            html.Th("Variable"), 
+            html.Th("Value"),
+            html.Th("__________"),
+            html.Th("Variable"), 
+            html.Th("Min"), 
+            html.Th("Max")]),
         html.Tr([
             html.Td("Surface area"), 
-            html.Td(dcc.Input(id='surface',value=900,type='number'))]),
+            html.Td(dcc.Input(id='surface',value=900,type='number')),
+            html.Td(""),
+            html.Td("Breathing rate - Faculty (m3/hour)"),
+            html.Td(dcc.Input(id='breath_fmin',value=1.0,type='number')),
+            html.Td(dcc.Input(id='breath_fmax',value=1.2,type='number'))]),
         html.Tr([
             html.Td("Height"), 
-            html.Td(dcc.Input(id='height',value=10,type='number'))]),
+            html.Td(dcc.Input(id='height',value=10,type='number')),
+            html.Td(""),
+            html.Td("Breathing rate - Student (m3/hour)"),
+            html.Td(dcc.Input(id='breath_smin',value=0.7,type='number')),
+            html.Td(dcc.Input(id='breath_smax',value=0.9,type='number'))]),
         html.Tr([
             html.Td("# of students"), 
-            html.Td(dcc.Input(id='num_students',value=10,type='number'))]),
+            html.Td(dcc.Input(id='num_students',value=10,type='number')),
+            html.Td(""),
+            html.Td("Ventilation w/outside air (1/hour)"),
+            html.Td(dcc.Input(id='vent_min',value=2,type='number')),
+            html.Td(dcc.Input(id='vent_max',value=4,type='number'))]),
         html.Tr([
             html.Td("Class duration"), 
-            html.Td(dcc.Input(id='class_duration',value=75,type='number'))]),
+            html.Td(dcc.Input(id='class_duration',value=75,type='number')),
+            html.Td(""),
+            html.Td("Decay rate of the virus (1/hour)"),
+            html.Td(dcc.Input(id='decay_min',value=0,type='number')),
+            html.Td(dcc.Input(id='decay_max',value=0.63,type='number')),]),
         html.Tr([
             html.Td("# of class periods"), 
-            html.Td(dcc.Input(id='class_periods',value=26,type='number'))]),
+            html.Td(dcc.Input(id='class_periods',value=26,type='number')),
+            html.Td(""),
+            html.Td("Deposition to surfaces (1/hour)"),
+            html.Td(dcc.Input(id='depos_min',value=0.3,type='number')),
+            html.Td(dcc.Input(id='depos_max',value=1.5,type='number')),]),
         html.Tr([
             html.Td("# of classes taken/student"), 
-            html.Td(dcc.Input(id='classes_taken',value=4,type='number'))])
+            html.Td(dcc.Input(id='classes_taken',value=4,type='number')),
+            html.Td(""),
+            html.Td("Additional control measures (1/hour)"),
+            html.Td(dcc.Input(id='additional_min',value=0,type='number')),
+            html.Td(dcc.Input(id='additional_max',value=0,type='number')),]),
+        html.Tr([
+            html.Td(""), 
+            html.Td(),
+            html.Td(""),
+            html.Td("Quanta emission rate - faculty (quanta/hour)"),
+            html.Td(dcc.Input(id='qfac_min',value=100,type='number')),
+            html.Td(dcc.Input(id='qfac_max',value=300,type='number')),]),
+        html.Tr([
+            html.Td(), 
+            html.Td(),
+            html.Td(""),
+            html.Td("Quanta emission rate - student (quanta/hour)"),
+            html.Td(dcc.Input(id='qstu_min',value=10,type='number')),
+            html.Td(dcc.Input(id='qstu_max',value=30,type='number')),]),
+        html.Tr([
+            html.Td(), 
+            html.Td(),
+            html.Td(),
+            html.Td("Exhalation mask efficiency (%)"),
+            html.Td(dcc.Input(id='exmask_min',value=50,type='number')),
+            html.Td(dcc.Input(id='exmask_max',value=70,type='number')),]),
+        html.Tr([
+            html.Td(""), 
+            html.Td(""),
+            html.Td(""),
+            html.Td("Inhalation mask efficiency (%)"),
+            html.Td(dcc.Input(id='inmask_min',value=30,type='number')),
+            html.Td(dcc.Input(id='inmask_max',value=50,type='number')),]),
+        html.Tr([
+            html.Td(),html.Td(),html.Td(),
+            html.Td("Student/faculty background infection rate (%)"),
+            html.Td(dcc.Input(id='infect_min',value=0.19,type='number')),
+            html.Td(dcc.Input(id='infect_max',value=0.38,type='number')),]),
             ]),
               
-    html.Button(id='submit-button-state',n_clicks=0,children='Submit'),
+    html.Button(id='submit-button-state',n_clicks=0,children='Recalculate'),
     html.Div([
         dcc.Markdown(id='faculty_results')]),
     dcc.Graph(id='faculty_histogram')
@@ -166,17 +227,50 @@ app.layout = html.Div([
                State('num_students','value'),
                State('class_duration','value'),
                State('class_periods','value'),
-               State('classes_taken','value')]
+               State('classes_taken','value'),
+               State('breath_fmin','value'),State('breath_fmax','value'),
+               State('breath_smin','value'),State('breath_smax','value'),
+               State('vent_min','value'),State('vent_max','value'),
+               State('decay_min','value'),State('decay_max','value'),
+               State('depos_min','value'),State('depos_max','value'),
+               State('additional_min','value'),State('additional_max','value'),
+               State('qfac_min','value'),State('qfac_max','value'),
+               State('qstu_min','value'),State('qstu_max','value'),
+               State('exmask_min','value'),State('exmask_max','value'),
+               State('inmask_min','value'),State('inmask_max','value'),
+               State('infect_min','value'),State('infect_max','value')]
 )
-def update_page(input_value,sa,ht,nstudents,cduration,cperiods,ctaken):
+def update_page(input_value,sa,ht,nstudents,cduration,cperiods,ctaken,
+                breath_fmin,breath_fmax,
+                breath_smin,breath_smax,
+                vent_min,vent_max,
+                decay_min,decay_max,
+                depos_min,depos_max,
+                additional_min,additional_max,
+                qfac_min,qfac_max,
+                qstu_min,qstu_max,
+                exmask_min,exmask_max,
+                inmask_min,inmask_max,
+                infect_min,infect_max):
     #Recompute the monte carlo run
     df = update_df(surface_area=sa,
                    height=ht,
                    num_students=nstudents,
                    duration=cduration,
                    num_class_periods=cperiods,
-                   num_classes_taken=ctaken
-                   )
+                   num_classes_taken=ctaken,
+                   breathing_rate_faculty = [breath_fmin,breath_fmax],
+                   breathing_rate_student = [breath_smin,breath_smax],
+                   ventilation_w_outside_air = [vent_min,vent_max],
+                   decay_rate_of_virus = [decay_min,decay_max],
+                   deposition_to_surface = [depos_min,depos_max],
+                   additional_control_measures = [additional_min,additional_max],
+                   quanta_emission_rate_faculty = [qfac_min,qfac_max],
+                   quanta_emission_rate_student = [qstu_min,qstu_max],
+                   exhalation_mask_efficiency = [exmask_min/100,exmask_max/100],
+                   inhalation_mask_efficiency = [inmask_min/100,inmask_max/100],
+                   background_infection_rate = [infect_min/100,infect_max/100])
+                   
     #Get Values
     md_results = summarize_output(df)
     #Create histogram
