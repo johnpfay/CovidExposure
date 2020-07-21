@@ -82,8 +82,9 @@ def update_df(surface_area = 900,
 def update_figure(df):
     #Update the dataframe
     fig = px.histogram(df,x='PS_Fsemester',nbins=40,
-                       title='Distribution of Faculty Probabilities')
-
+                       title='Distribution of Faculty Probabilities (Semester)')
+    fig.update_xaxes(title_text = 'Probability of infection (%)')
+    fig.update_layout(xaxis_tickformat = ".2%")
     #fig = px.scatter(df,x='L',y='L*DUR')
     fig.update_layout(transition_duration=500)
     return(fig)
@@ -96,19 +97,22 @@ def summarize_output(df):
     stu_quants = [df['PS_Ssemester'].quantile(x) for x in (0.05,0.25,0.5,0.75,0.9)]
     #Create Markdown
     md_text=f'''
-    **Probability of infection: Faculty**\n
-    Mean: {fac_mean:0.2%}\n
-     Q05:  {fac_quants[0]:0.2%}\n
-     Q25:  {fac_quants[1]:0.2%}\n
-     Q50:  {fac_quants[2]:0.2%}\n
-     Q75:  {fac_quants[3]:0.2%}\n
-     Q95:  {fac_quants[4]:0.2%}\n
-    '''
-    md_textx = f'''
-    | Mean | Q05 | Q25 | Q50 | Q75 | Q95 |
-    | --- | --- | --- | --- | --- | --- |
-    |  {fac_mean:0.2%} | {fac_quants[0]:0.2%} | {fac_quants[1]:0.2%} | {fac_quants[2]:0.2%} | {fac_quants[3]:0.2%} | {fac_quants[4]:0.2%} | 
-    '''
+### Output: Probabilies for semester accounting for community infection rates   
+| Average Infection Probability for Faculty Member for semester | {fac_mean:0.2%} |
+| --- | --- |
+| 5th percentile: | {fac_quants[0]:0.2%} |
+| 25th percentile: | {fac_quants[1]:0.2%} |
+| 50th percentile: | {fac_quants[2]:0.2%} |
+| 75th percentile: | {fac_quants[3]:0.2%} |
+| 95th percentile: | {fac_quants[4]:0.2%} |
+| --- | --- |
+| **Average Infection Probability for Student for semester**       | **{stu_mean:0.2%}** |
+| 5th percentile: | {stu_quants[0]:0.2%} |
+| 25th percentile: | {stu_quants[1]:0.2%} |
+| 50th percentile: | {stu_quants[2]:0.2%} |
+| 75th percentile: | {stu_quants[3]:0.2%} |
+| 95th percentile: | {stu_quants[4]:0.2%} |
+'''
     return md_text
 
 #%%Read in the static data
@@ -118,9 +122,9 @@ md_results = summarize_output(df)
 #df = pd.read_csv('static.csv')
 
 #%% Page construction
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__)#, external_stylesheets=external_stylesheets)
 server = app.server 
 
 #Construct the web site
@@ -184,4 +188,4 @@ def update_page(input_value,sa,ht,nstudents,cduration,cperiods,ctaken):
 
 
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)
