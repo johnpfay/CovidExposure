@@ -82,7 +82,7 @@ def update_df(surface_area = 900,
 def update_figure(df):
     #Update the dataframe
     fig = px.histogram(df,x='PS_Fsemester',nbins=40,
-                       title='Distribution of Faculty Probabilities (Semester)')
+                       title='Distribution of Faculty Infection Probabilities over the course of the Semester for 10,000 Monte Carlo Simulations')
     fig.update_xaxes(title_text = 'Probability of infection (%)')
     fig.update_layout(xaxis_tickformat = ".2%")
     #fig = px.scatter(df,x='L',y='L*DUR')
@@ -131,7 +131,7 @@ server = app.server
 app.layout = html.Div([
     dcc.Markdown('''
 **Monte Carlo Estimation of COVID-19 airborne transmission during classroom teaching**: 
-[Link to spreadsheet version]([https://tinyurl.com/yxfd23kr')
+[Link to spreadsheet version](https://tinyurl.com/yxfd23kr)
         
 Developed by **Prasad Kasibhatla** (Duke), with help from Prof. Jose Jimenez (U. Colorado) and Prof. Elizabeth Albright (Duke)  
 Dashboard created by [**John Fay**](mailto:john.fay@duke.edu) (Duke) -- Code available at: [https://github.com/johnpfay/CovidExposure](https://github.com/johnpfay/CovidExposure)  
@@ -141,10 +141,10 @@ Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) if you have questions, 
            'background-color': 'lightblue'}),
     html.Table([
         html.Tr([
-            html.Th("Variable"), 
+            html.Th("Known Variables"), 
             html.Th("Value"),
-            html.Th("__________"),
-            html.Th("Variable"), 
+            html.Th("______",style={'color':'white'}),
+            html.Th("Uncertain Variables"), 
             html.Th("Min"), 
             html.Th("Max")]),
         html.Tr([
@@ -224,10 +224,13 @@ Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) if you have questions, 
             html.Td(dcc.Input(id='infect_max',value=0.38,type='number')),]),
             ]),
               
-    html.Button(id='submit-button-state',n_clicks=0,children='Recalculate'),
+    html.Button(id='submit-button-state',n_clicks=0,children='Recalculate',
+                style={'font-size':24,'background-color': '#4CAF50',
+                       'color':'white',
+                       'padding':'15px 32px'}),
     html.Div([
-        dcc.Markdown(id='faculty_results')]),
-    dcc.Graph(id='faculty_histogram')
+        dcc.Markdown(id='faculty_results'),
+    dcc.Graph(id='faculty_histogram')])
 ])
 
 @app.callback([Output('faculty_results','children'),
