@@ -128,17 +128,17 @@ server = app.server
 #Construct the web site
 app.layout = html.Div([
     dcc.Markdown('''
-**Monte Carlo Estimation of COVID-19 airborne transmission during classroom teaching**: 
+### Monte Carlo Estimation of COVID-19 airborne transmission during classroom teaching: 
 
 This is a Monte Carlo verison of Prof. Jose Jimenez’s classroom/semester sheets 
 of his COVID-19 risk estimator ([https://tinyurl.com/covid-estimator](https://tinyurl.com/covid-estimator)). 
 Please see the README and FAQ tabs on his worksheet for important information 
-on assumptions, methodology, and inputs
+on assumptions, methodology, and inputs. This Monte Carlo calculator is available for download as a a spreadsheet at https://tinyurl.com/yxfd23kr.
 
-NOTE: 
->The absolute estimates of risk are very uncertain, only expect to get the order-of-magnitude right. 
+**_NOTE: 
+The absolute estimates of risk are very uncertain, only expect to get the order-of-magnitude right. 
 The effect of control measures (e.g. more ventilation, fewer people, shorter duration, masks vs not) are expected to be much more accurate. 
-Please do not just latch on to the numbers, values such as the quanta emission rates evolve with new knowledge.  
+Please do not just latch on to the numbers, values such as the quanta emission rates evolve with new knowledge._**  
 
 ---     
 Developed by **Prasad Kasibhatla** (Duke), with help from Prof. Jose Jimenez (U. Colorado) and Prof. Elizabeth Albright (Duke)  
@@ -156,17 +156,17 @@ Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) if you have questions, 
             html.Th("Min"), 
             html.Th("Max")]),
         html.Tr([
-            html.Td("Surface area (cu.ft.)"), 
+            html.Td("Area of Room (sq.ft.)"), 
             html.Td(dcc.Input(id='surface',value=900,type='number')),
             html.Td(""),
-            html.Td("Breathing rate - Faculty (m3/hour)"),
+            html.Td("Breathing rate - Faculty (m³/hour)"),
             html.Td(dcc.Input(id='breath_fmin',value=1.0,type='number')),
             html.Td(dcc.Input(id='breath_fmax',value=1.2,type='number'))]),
         html.Tr([
-            html.Td("Height (ft.)"), 
+            html.Td("Height of Room(ft.)"), 
             html.Td(dcc.Input(id='height',value=10,type='number')),
             html.Td(""),
-            html.Td("Breathing rate - Student (m3/hour)"),
+            html.Td("Breathing rate - Student (m³/hour)"),
             html.Td(dcc.Input(id='breath_smin',value=0.7,type='number')),
             html.Td(dcc.Input(id='breath_smax',value=0.9,type='number'))]),
         html.Tr([
