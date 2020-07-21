@@ -12,7 +12,6 @@ import plotly.express as px
 import pandas as pd
 import numpy as np
 
-
 #%% Functions
 def get_random(var,n=10000):
     return np.random.uniform(*var+[n])
@@ -130,8 +129,18 @@ server = app.server
 app.layout = html.Div([
     dcc.Markdown('''
 **Monte Carlo Estimation of COVID-19 airborne transmission during classroom teaching**: 
-[Link to spreadsheet version](https://tinyurl.com/yxfd23kr)
-        
+
+This is a Monte Carlo verison of Prof. Jose Jimenez’s classroom/semester sheets 
+of his COVID-19 risk estimator ([https://tinyurl.com/covid-estimator](https://tinyurl.com/covid-estimator)). 
+Please see the README and FAQ tabs on his worksheet for important information 
+on assumptions, methodology, and inputs
+
+NOTE: 
+>The absolute estimates of risk are very uncertain, only expect to get the order-of-magnitude right. 
+The effect of control measures (e.g. more ventilation, fewer people, shorter duration, masks vs not) are expected to be much more accurate. 
+Please do not just latch on to the numbers, values such as the quanta emission rates evolve with new knowledge.  
+
+---     
 Developed by **Prasad Kasibhatla** (Duke), with help from Prof. Jose Jimenez (U. Colorado) and Prof. Elizabeth Albright (Duke)  
 Dashboard created by [**John Fay**](mailto:john.fay@duke.edu) (Duke) -- Code available at: [https://github.com/johnpfay/CovidExposure](https://github.com/johnpfay/CovidExposure)  
 Please contact [Prasad Kasibhatla](mailto:psk9@duke.edu) if you have questions, comments, and suggestions. 
