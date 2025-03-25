@@ -10,7 +10,7 @@ dask==2025.3.0
 decorator==4.4.0
 Flask==2.2.5
 Flask-Compress==1.4.0
-gunicorn==22.0.0
+gunicorn==23.0.0
 html5lib==1.0.1
 idna==3.7
 ipython-genutils==0.2.0
